@@ -1,0 +1,16 @@
+.inner-circle-loader {
+  will-change: filter;
+  transition: filter 300ms;
+  animation: circle-loader infinite .5s linear
+}
+
+
+@keyframes circle-loader {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,56 @@
+.NumberUnit.top {
+  width: auto;
+  padding: 10px 15px;
+}
+
+.NumberUnit.left {
+  width: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.NumberUnit label {
+  font-size: 15px;
+  font-weight: 400;
+  color: #444;
+}
+
+.NumberUnit input {
+  height: 40px;
+  padding-left: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 2px solid gray;
+  border-radius: 5px 0 0 5px;
+  border-right: none;
+}
+
+.NumberUnit .top {
+  width: 100%;
+
+}
+
+.NumberUnit .left {
+  width: 80px;
+
+}
+
+.NumberUnit .Polaris-Select {
+  width: 60px;
+  text-align: start;
+}
+
+.NumberUnit .Polaris-Select__Backdrop {
+  border: 2px solid gray;
+  border-radius: 0 5px 5px 0;
+  height: 40px;
+  /* border-left: 0; */
+  padding: 0;
+}
+
+.NumberUnit .filed {
+  display: flex;
+  margin-top: 10px;
+}

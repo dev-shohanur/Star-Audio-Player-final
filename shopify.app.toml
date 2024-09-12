@@ -1,0 +1,27 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "871d3aa955ec444c34b8558d1f4d56b8"
+name = "star-audio-player"
+handle = "star-audio-player"
+application_url = "https://appp-fragrant-sound-8279.fly.dev"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "dev-shohan.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,read_script_tags,write_files,write_script_tags,write_themes"
+
+[auth]
+redirect_urls = [
+  "https://appp-fragrant-sound-8279.fly.dev/auth/callback",
+]
+
+[webhooks]
+api_version = "2024-01"
+
+[pos]
+embedded = false

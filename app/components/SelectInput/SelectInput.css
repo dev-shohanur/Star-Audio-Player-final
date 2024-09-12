@@ -1,0 +1,32 @@
+.SelectInput-Container.top {
+  max-width: 100%;
+  padding: 10px 15px;
+
+}
+
+.SelectInput-Container.left {
+  max-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+
+}
+
+.SelectInput-Container.top .Polaris-Select {
+  width: 100%;
+  text-align: start;
+  margin-top: 10px;
+}
+
+.SelectInput-Container.left .Polaris-Select {
+  width: 140px;
+  text-align: start;
+  margin-top: 10px;
+}
+
+.SelectInput-Container label {
+  font-size: 15px;
+  font-weight: 400;
+  color: #444;
+}

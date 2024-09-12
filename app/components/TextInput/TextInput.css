@@ -1,0 +1,25 @@
+.TextImport {
+  width: audio;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.TextImport label {
+  font-size: 15px;
+  font-weight: 400;
+  color: #444;
+}
+
+.TextImport input {
+  max-width: 200px;
+  width: auto;
+  min-width: 120px;
+  height: 40px;
+  padding-left: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 2px solid gray;
+  border-radius: 5px;
+}

@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  // url      = env("DATABASE_URL")
+  url      = "mongodb+srv://starAudioPlayer:U1FWHUrBXpL2vJzx@audio.orn5t.mongodb.net/starAudioPlayer?retryWrites=true&w=majority"
+}
+
+model Session {
+  session_id    String    @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @unique
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  firstName     String?
+  lastName      String?
+  email         String?
+  locale        String?
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  accountOwner  Boolean   @default(false)
+  collaborator  Boolean   @default(false)
+  emailVerified Boolean   @default(false)
+  userId        BigInt?
+}
+
+model Users {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  shop      String   @unique
+  planId    String?
+  chargeId  String?
+  cardits   Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Charges {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  shop         String
+  name         String
+  price        String
+  status       String
+  cradit       Int?
+  activated_on String?
+  trial_days   String?
+  cancelled_on String?
+  billing_on   String?
+  planId       String?
+  chargeId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Plans {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  price        String
+  currencyCode String
+  options      Json?
+  trial_days   String?
+  cradit       Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Audio {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  shop           String
+  title          String
+  url            String
+  mainColor      String
+  screenDefault  Json
+  screenOne      Json
+  screenTwo      Json
+  selectedScreen String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Screen {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  shop            String
+  title           String
+  controls        Json
+  width           String
+  height          String
+  borderWidth     String?
+  borderStyle     String?
+  borderColor     String?
+  borderRadius    String?
+  iconSize        String?
+  iconColor       String?
+  background      String?
+  backgroundImage String?
+  image           String?
+  margin          String?
+  padding         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

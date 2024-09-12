@@ -1,0 +1,36 @@
+.colorPickerMainContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.colorPickerWrapper {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 1px solid rgb(202, 202, 202);
+}
+
+.colorPickerWrapper label {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  inset: 0px;
+  /* background: rgb(241, 241, 241); */
+  z-index: 999999;
+  cursor: pointer;
+}
+
+.colorPicker {
+  color: #ff000000;
+  background: #fff0;
+  border: none;
+  outline: none;
+  z-index: -10;
+}
+
+/* #clr-picker.clr-picker{
+  top: 50px !important;
+} */
