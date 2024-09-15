@@ -1,8 +1,7 @@
-<link href="https://mixed-kinds-peers-discussing.trycloudflare.com/plyr.css" rel="stylesheet" type="text/css">
+<link href="https://lead-convinced-ea-conclude.trycloudflare.com/plyr.css" rel="stylesheet" type="text/css">
 <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
 <script>
-  console.log('Hello world..!');
 
   const audioPlyrElements = document.querySelectorAll('.star-audio-plyr');
 
@@ -17,9 +16,8 @@
       .map((item) => item.getAttribute('data-id'))
       .filter((id) => id);
 
-    console.log({ ids });
 
-    fetch('https://mixed-kinds-peers-discussing.trycloudflare.com/app/api/plyr-data', {
+    fetch('https://lead-convinced-ea-conclude.trycloudflare.com/app/api/plyr-data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +31,6 @@
           (value, index, self) => index === self.findIndex((obj) => obj.id === value.id)
         );
 
-        console.log(uniqueNumbers, datas.audio);
 
         uniqueNumbers.forEach((data, index) => {
           function generateUniqueId() {
@@ -60,14 +57,9 @@
             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings'],
           };
 
-          console.log({ audioElement: audioElement, index });
 
           audioElement.forEach((audio,i)=>{
 
-            console.log(000,data,0000)
-            if(data?.selectedScreen === "screenTwo") {
-               console.log(data?.screenTwo?.backgroundImage)
-            }
 
             const styles = `
           <style>
@@ -75,6 +67,8 @@
               --plyr-control-icon-size: ${data[data?.selectedScreen]?.iconSize || '16px'};
               --plyr-audio-controls-background: ${data[data?.selectedScreen]?.background || '#f4f4f4'};
               --plyr-menu-border-color: ${data[data?.selectedScreen]?.borderColor || '#ccc'};
+              margin:  ${data[data?.selectedScreen]?.margin};
+              padding:  ${data[data?.selectedScreen]?.padding};
             }
             .player-${id} .plyr--audio .plyr__controls {
               border-radius: ${data[data?.selectedScreen]?.borderRadius || '4px'};
@@ -303,7 +297,6 @@
               <source src="${data.url}" type="audio/mp3" />
             </audio>
           </div>`;
-                console.log({ audio:data[data?.selectedScreen]?.borderWidth});
                 audio.appendChild(htmlToElement(styles));
                 audio.appendChild(htmlToElement(modalElementString));
                 const player = new Plyr(`#player-${id}-${i}`, controls);

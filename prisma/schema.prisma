@@ -60,6 +60,8 @@ model Charges {
 model Plans {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String
+  description  String?
+  features     Json
   price        String
   currencyCode String
   options      Json?

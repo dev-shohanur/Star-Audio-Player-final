@@ -22,16 +22,53 @@ export const loader = async ({ request }) => {
   const user = await prisma.Users.findMany({
     where: { shop: admin?.rest?.session?.shop },
   });
-
+  const charge = await prisma.Charges.findMany({
+    where: { shop: admin?.rest?.session?.shop },
+  });
 
   if (user[0]?.shop !== admin?.rest?.session?.shop) {
     await prisma.Users.create({
       data: {
         shop: admin?.rest?.session?.shop,
-        cardits: 10,
+        cardits: 5,
       },
     });
   }
+  // else if (!charge) {
+  //   const response = await axios.get(
+  //     `https://${admin?.rest?.session?.shop}/admin/api/2024-01/recurring_application_charges/${charge[0]?.chargeId}.json`,
+  //     {
+  //       headers: {
+  //         "X-Shopify-Access-Token": admin?.rest?.session?.accessToken,
+  //         "Content-Type": "application/json",
+  //       },
+  //     },
+  //   );
+
+  //   const subscription = await response.data;
+
+  //   if (subscription?.status === "ACTIVE") {
+  //     if (subscription?.name == "Pro") {
+  //       await prisma.Users.update({
+  //         where: {
+  //           id: user[0].id,
+  //         },
+  //         data: {
+  //           cardits: 10,
+  //         },
+  //       });
+  //     } else if (subscription?.name == "Pro Plus") {
+  //       await prisma.Users.update({
+  //         where: {
+  //           id: user[0].id,
+  //         },
+  //         data: {
+  //           cardits: 100000000000,
+  //         },
+  //       });
+  //     }
+  //   }
+  // }
   return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
 };
 

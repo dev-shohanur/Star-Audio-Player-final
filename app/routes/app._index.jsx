@@ -41,11 +41,20 @@ import {
 import { authenticate } from "../shopify.server";
 import { PrismaClient } from "@prisma/client";
 import Loader from "../components/Loader/Loader";
+import axios from "axios";
 
 const prisma = new PrismaClient();
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
+
+  const charge = await prisma.Charges.findMany({
+    where: { shop: admin?.rest?.session?.shop },
+  });
+  const user = await prisma.Users.findMany({
+    where: { shop: admin?.rest?.session?.shop },
+  });
+
   const audio = await prisma.audio.findMany({
     where: {
       shop: admin?.rest?.session?.shop,
@@ -56,10 +65,6 @@ export const loader = async ({ request }) => {
       url: true,
       shop: true,
     },
-  });
-
-  const user = await prisma.Users.findMany({
-    where: { shop: admin?.rest?.session?.shop },
   });
 
   return json({ audio, user: user[0] });
@@ -141,13 +146,15 @@ export const action = async ({ request }) => {
     const result = await prisma.audio.delete({
       where: { id: body.get("data") },
     });
-    return json({ result });
+    return json({ result, responseAudioUrlJson });
   }
 };
 
 export default function Index() {
   const nav = useNavigation();
   const actionData = useActionData();
+
+  console.log(actionData?.responseAudioUrlJson);
 
   const loaderData = useLoaderData();
   const submit = useSubmit();
@@ -425,7 +432,9 @@ export default function Index() {
                 >
                   Your Maximum Limit {loaderData?.user?.cardits}
                 </h2>
-                <Button variant="primary">Upgrade</Button>
+                <Link to={`/app/pricing`}>
+                  <Button variant="primary">Upgrade</Button>
+                </Link>
               </div>
             ) : (
               <>

@@ -289,8 +289,6 @@ if (audioPlyrElement.length >= 1) {
         const audioElement = htmlToElement(modalElementString);
         const stylesElement = htmlToElement(styles);
 
-        console.log({ styles, stylesElement })
-
         audioPlyrElement[0].appendChild(audioElement)
         audioPlyrElement[0].appendChild(stylesElement)
 
