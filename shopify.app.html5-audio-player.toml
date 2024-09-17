@@ -3,7 +3,7 @@
 client_id = "e5f4266eed0093b759b2bb014c42914b"
 name = "HTML5 Audio Player"
 handle = "html5-audio-player"
-application_url = "https://appp-hidden-wildflower-7801.fly.dev"
+application_url = "https://sunset-fire-helen-hotel.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,16 +17,17 @@ scopes = "read_products,read_script_tags,write_files,write_script_tags,write_the
 
 [auth]
 redirect_urls = [
-  "https://appp-hidden-wildflower-7801.fly.dev/auth/callback",
+  "https://sunset-fire-helen-hotel.trycloudflare.com/auth/callback",
+  "https://sunset-fire-helen-hotel.trycloudflare.com/auth/shopify/callback",
+  "https://sunset-fire-helen-hotel.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-07"
 
   [[webhooks.subscriptions]]
-  uri = "https://appp-hidden-wildflower-7801.fly.dev/webhooks"
-  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
-
+  uri = "https://appp-billowing-wave-6351.fly.dev/webhooks"
+  compliance_topics = [ "customers/redact", "customers/data_request", "shop/redact" ]
 
 [pos]
 embedded = false

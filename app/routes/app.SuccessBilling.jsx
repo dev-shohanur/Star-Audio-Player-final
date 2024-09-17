@@ -9,14 +9,16 @@ import { Button } from "@shopify/polaris";
 import React from "react";
 import { authenticate } from "../shopify.server";
 import axios from "axios";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const loader = async ({ request }) => {
-  const { admin, session } = await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request);
 
   const url = new URL(request.url);
   const charge_id = url.searchParams.get("charge_id");
 
-  // return { name: "Md Shohanur Rahman", charge_id };
   // const appCharge = await admin.rest.resources.ApplicationCharge.find({
   //   session: session,
   //   id: charge_id,
@@ -40,6 +42,7 @@ export const loader = async ({ request }) => {
     const charge = await prisma.Charges.findMany({
       where: { chargeId: charge_id },
     });
+    // return { charge, name: "Md Shohanur Rahman", charge_id };
 
     let createCharge = [];
 
@@ -75,6 +78,7 @@ export const loader = async ({ request }) => {
         },
       });
     }
+
     let u;
 
     if (appCharge?.status === "active") {
@@ -100,14 +104,23 @@ export const loader = async ({ request }) => {
     }
   }
 
-  return { appCharge: appCharge };
+  return { appCharge: appCharge, charge_id };
 
   return { createCharge, shop: admin?.rest?.session?.shop };
+};
+
+export const action = async ({ request }) => {
+  // Authentication
+  const { admin } = await authenticate.admin(request);
+
+  return null;
 };
 
 const SuccessBilling = () => {
   const loaderData = useLoaderData();
   const navigate = useNavigate();
+
+  console.log({ loaderData });
 
   return (
     <div

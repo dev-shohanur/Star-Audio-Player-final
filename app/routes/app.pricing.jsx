@@ -109,7 +109,7 @@ export const action = async ({ request }) => {
       {
         variables: {
           name: body.get("name"),
-          returnUrl: `https://admin.shopify.com/store/${admin?.rest?.session?.shop.split(".")[0]}/apps/star-audio-player/app/SuccessBilling`,
+          returnUrl: `https://admin.shopify.com/store/${admin?.rest?.session?.shop.split(".")[0]}/apps/html5-audio-player/app/SuccessBilling`,
           lineItems: [
             {
               plan: {
@@ -179,7 +179,7 @@ export const action = async ({ request }) => {
 
   const data = await response.json();
 
-  return { data };
+  return { data, charges: charge, user: user };
 };
 
 const SubscriptionBtn = (props) => {
@@ -187,8 +187,6 @@ const SubscriptionBtn = (props) => {
   const actionData = useActionData();
   const loaderData = useLoaderData();
   const [loading, setLoading] = useState(false);
-
-  console.log({ actionData });
 
   const plan = loaderData.plan;
   const plans = loaderData.allPlans;
@@ -199,12 +197,7 @@ const SubscriptionBtn = (props) => {
   }
 
   const startSub = (plan) => {
-    if (actionData?.appPurchaseOneTimeCreate?.confirmationUrl) {
-      window.top.location.hash =
-        actionData?.appPurchaseOneTimeCreate?.confirmationUrl;
-    }
-
-    console.log({ plan });
+    console.log("Md Md mmmmmmm");
 
     return submit(plan, { replace: true, method: "POST" });
   };
@@ -215,13 +208,11 @@ const SubscriptionBtn = (props) => {
         { name: "Md Shohanur Rahman" },
         { replace: true, method: "PUT" }, // optional: verify how encoding is being handled
       );
-      console.log("Md Shohanur Rahman");
     }
   };
 
   useEffect(() => {
     if (actionData) {
-      console.log({ actionData });
       setLoading(false);
     }
   }, [actionData]);
@@ -233,7 +224,7 @@ const SubscriptionBtn = (props) => {
   const user = loaderData?.user[0];
   const charge = loaderData?.charge[0];
 
-  console.log({ plan });
+  console.log({ actionData });
 
   return (
     <Page>

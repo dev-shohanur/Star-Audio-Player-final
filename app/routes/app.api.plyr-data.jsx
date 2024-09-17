@@ -1,5 +1,9 @@
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
 export async function loader() {
-  const data = "Md Shohanur Rahman";
+  const data = "HTML5 Audio Player";
 
   return { name: data };
 }

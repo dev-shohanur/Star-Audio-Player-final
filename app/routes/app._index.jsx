@@ -296,7 +296,7 @@ export default function Index() {
     toggleActiveFour();
   };
   const copyEmbed = (id, title) => {
-    const embedCode = `<div class="star-audio-plyr" data-id="${id}"></div>`;
+    const embedCode = `<div class="html5-audio-plyr" data-id="${id}"></div>`;
 
     navigator.clipboard.writeText(embedCode);
     toggleActiveThree();
@@ -361,7 +361,7 @@ export default function Index() {
 
   return (
     <Page>
-      <ui-title-bar title="Star Audio Player">
+      <ui-title-bar title="HTML5 Audio Player">
         <button variant="primary" onClick={uploadAudio}>
           Upload Audio
         </button>

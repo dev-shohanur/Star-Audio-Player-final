@@ -1,9 +1,8 @@
-<link href="https://lead-convinced-ea-conclude.trycloudflare.com/plyr.css" rel="stylesheet" type="text/css">
-<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-
+<script id="html5-player-plyr-js" src="{{ 'plyr-3.7.8.js' | asset_url }}" defer></script>
+<link id="html5-player-plyr-css" rel="stylesheet" type="text/css" href="{{ 'plyr-3.7.8.css' | asset_url }}">
+<link id="html5-player-plyr-css" rel="stylesheet" type="text/css" href="{{ 'style.css' | asset_url }}">
 <script>
-
-  const audioPlyrElements = document.querySelectorAll('.star-audio-plyr');
+const audioPlyrElements = document.querySelectorAll('.html5-audio-plyr');
 
   function htmlToElement(html) {
     const temp = document.createElement('template');
@@ -16,8 +15,7 @@
       .map((item) => item.getAttribute('data-id'))
       .filter((id) => id);
 
-
-    fetch('https://lead-convinced-ea-conclude.trycloudflare.com/app/api/plyr-data', {
+    fetch('https://sunset-fire-helen-hotel.trycloudflare.com/app/api/plyr-data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,6 +25,9 @@
     })
       .then((res) => res.json())
       .then((datas) => {
+
+        
+
         let uniqueNumbers = datas.audio.filter(
           (value, index, self) => index === self.findIndex((obj) => obj.id === value.id)
         );
@@ -40,7 +41,7 @@
           const generateId = generateUniqueId();
 
           const id = data.id;
-          const audioElement = document.querySelectorAll(`.star-audio-plyr[data-id="${id}"]`);
+          const audioElement = document.querySelectorAll(`.html5-audio-plyr[data-id="${id}"]`);
 
           if (!audioElement) return;
 
@@ -313,8 +314,7 @@
 
 {% schema %}
 {
-  "name": "Star Audio Player",
-  "stylesheet": "/style.css",
+  "name": "HTML5 Audio Player",
   "target": "body"
 }
 {% endschema %}

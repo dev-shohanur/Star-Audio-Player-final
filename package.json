@@ -1,5 +1,5 @@
 {
-  "name": "appp",
+  "name": "HTML5 Audio Player",
   "private": true,
   "scripts": {
     "build": "vite build && vite build --ssr",
