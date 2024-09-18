@@ -72,18 +72,19 @@ const FileUploadWithLink = ({ label, value, onChange }) => {
           id={`FileUpload-${id}`}
           disabled={isLoading}
         />
-        <div style={{ width: 40, height: 40 }}>
+        <div style={{ width: 40, height: 40 ,marginRight:"5px"}}>
           <DropZone onDrop={handleDropZoneDrop}>
             <DropZone.FileUpload />
           </DropZone>
+        </div>
           {files?.length > 0 ? (
             <Button
+            size="large"
               icon={CheckSmallIcon}
               accessibilityLabel="Save"
               onClick={handleSubmitFile}
             />
           ) : null}
-        </div>
       </div>
     </div>
   );

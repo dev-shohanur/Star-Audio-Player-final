@@ -332,7 +332,7 @@ button {
   background: #fff;
   display: flex;
   justify-content: center;
-
+align-items: center;
 
 }
 
@@ -371,6 +371,9 @@ button {
   background: transparent;
   border: none;
   width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .controls button.play {
@@ -379,6 +382,9 @@ button {
   border-radius: 100%;
   padding: 0px;
   box-shadow: 0px 1px 15px 2px #00000054;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .demo-1 .content {
