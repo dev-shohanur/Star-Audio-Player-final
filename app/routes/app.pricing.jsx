@@ -129,7 +129,6 @@ export const action = async ({ request }) => {
       },
     );
   } else if (request.method === "PUT") {
-    console.log(body.get("name"));
 
     // Cancel existing subscription
     const appSubscriptionResponse = await admin.graphql(
@@ -197,7 +196,6 @@ const SubscriptionBtn = (props) => {
   }
 
   const startSub = (plan) => {
-    console.log("Md Md mmmmmmm");
 
     return submit(plan, { replace: true, method: "POST" });
   };
@@ -224,7 +222,6 @@ const SubscriptionBtn = (props) => {
   const user = loaderData?.user[0];
   const charge = loaderData?.charge[0];
 
-  console.log({ actionData });
 
   return (
     <Page>

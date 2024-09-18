@@ -1,4 +1,4 @@
-const audioPlyrElement = document.querySelectorAll(".star-audio-plyr")
+const audioPlyrElement = document.querySelectorAll(".html5-audio-plyr")
 
 
 
@@ -9,12 +9,12 @@ const cssInt = () => {
   var i = document.createElement("link");
   i.rel = "stylesheet";
   i.type = "text/css";
-  i.href = "https://updates-ultimately-richardson-benefits.trycloudflare.com" + "/style.css";
+  i.href = "https://appp-long-snowflake-3055.fly.dev" + "/style.css";
   i.media = "all";
   var b = document.createElement("link");
   b.rel = "stylesheet";
   b.type = "text/css";
-  b.href = "https://updates-ultimately-richardson-benefits.trycloudflare.com" + "/plyr.css";
+  b.href = "https://appp-long-snowflake-3055.fly.dev" + "/plyr.css";
   b.media = "all";
   a.appendChild(i);
   return a.appendChild(b);
@@ -43,7 +43,7 @@ if (audioPlyrElement.length >= 1) {
   })
 
 
-  fetch("https://updates-ultimately-richardson-benefits.trycloudflare.com/app/api/plyr-data", {
+  fetch("https://appp-long-snowflake-3055.fly.dev/app/api/plyr-data", {
     method: "POST",
     header: {
       "Content-Type": "application/json",

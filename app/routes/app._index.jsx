@@ -154,7 +154,6 @@ export default function Index() {
   const nav = useNavigation();
   const actionData = useActionData();
 
-  console.log(actionData?.responseAudioUrlJson);
 
   const loaderData = useLoaderData();
   const submit = useSubmit();

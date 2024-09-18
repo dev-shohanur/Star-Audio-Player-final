@@ -188,7 +188,6 @@ const SubscriptionBtn = (props) => {
         actionData?.appPurchaseOneTimeCreate?.confirmationUrl;
     }
 
-    console.log({ plan });
 
     return submit(plan, { replace: true, method: "POST" });
   };

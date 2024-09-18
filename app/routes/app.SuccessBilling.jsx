@@ -120,7 +120,6 @@ const SuccessBilling = () => {
   const loaderData = useLoaderData();
   const navigate = useNavigate();
 
-  console.log({ loaderData });
 
   return (
     <div

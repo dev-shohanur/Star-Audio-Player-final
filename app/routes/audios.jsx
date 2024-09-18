@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { PrismaClient } from "@prisma/client";
-import { cors } from 'remix-utils/cors';
+// import { cors } from "remix-utils/cors";
 
 const prisma = new PrismaClient();
        
@@ -8,7 +8,6 @@ export async function loader({request}) {
  
   let data  = [];
     try {
-      const origin = request.headers.get('origin') || '';
       const url = new URL(request.url);
       const ids = JSON.parse(url.searchParams.get("ids"), '[]');
 
@@ -28,8 +27,7 @@ export async function loader({request}) {
               selectedScreen: true,
             },
           });
-          const response = json({audio: data });
-          return cors(request,response)
+          return json({audio: data });
     } catch (error) {
       return json({error: error, audio: data})
     }

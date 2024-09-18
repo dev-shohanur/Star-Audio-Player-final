@@ -1,16 +1,12 @@
-# fly.toml app configuration file generated for appp-hidden-wildflower-7801 on 2024-09-16T21:10:02+06:00
+# fly.toml app configuration file generated for appp-weathered-tree-4047 on 2024-09-17T22:57:24+06:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'appp-hidden-wildflower-7801'
+app = 'appp-weathered-tree-4047'
 primary_region = 'sin'
 
 [build]
-
-[env]
-DATABASE_URL = "mongodb+srv://starAudioPlayer:U1FWHUrBXpL2vJzx@audio.orn5t.mongodb.net/starAudioPlayer?retryWrites=true&w=majority"
-NODE_ENV = "production"
 
 [http_service]
   internal_port = 3000

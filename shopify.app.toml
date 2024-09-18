@@ -3,7 +3,7 @@
 client_id = "e5f4266eed0093b759b2bb014c42914b"
 name = "HTML5 Audio Player"
 handle = "html5-audio-player"
-application_url = "https://appp-hidden-wildflower-7801.fly.dev"
+application_url = "https://appp-weathered-tree-4047.fly.dev"
 embedded = true
 
 [build]
@@ -17,14 +17,14 @@ scopes = "read_products,read_script_tags,write_files,write_script_tags,write_the
 
 [auth]
 redirect_urls = [
-  "https://appp-hidden-wildflower-7801.fly.dev/auth/callback",
+  "https://appp-weathered-tree-4047.fly.dev/auth/callback",
 ]
 
 [webhooks]
 api_version = "2024-07"
 
   [[webhooks.subscriptions]]
-  uri = "https://appp-hidden-wildflower-7801.fly.dev/webhooks"
+  uri = "https://appp-weathered-tree-4047.fly.dev/webhooks"
   compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
 
 

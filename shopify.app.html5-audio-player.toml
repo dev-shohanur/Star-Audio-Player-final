@@ -3,7 +3,7 @@
 client_id = "e5f4266eed0093b759b2bb014c42914b"
 name = "HTML5 Audio Player"
 handle = "html5-audio-player"
-application_url = "https://sunset-fire-helen-hotel.trycloudflare.com"
+application_url = "https://toolbar-pts-mu-separated.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,read_script_tags,write_files,write_script_tags,write_the
 
 [auth]
 redirect_urls = [
-  "https://sunset-fire-helen-hotel.trycloudflare.com/auth/callback",
-  "https://sunset-fire-helen-hotel.trycloudflare.com/auth/shopify/callback",
-  "https://sunset-fire-helen-hotel.trycloudflare.com/api/auth/callback"
+  "https://toolbar-pts-mu-separated.trycloudflare.com/auth/callback",
+  "https://toolbar-pts-mu-separated.trycloudflare.com/auth/shopify/callback",
+  "https://toolbar-pts-mu-separated.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

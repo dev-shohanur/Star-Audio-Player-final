@@ -16,6 +16,7 @@ module.exports = {
   appDirectory: "app",
   serverErrorBoundary: true, // Enabling detailed errors
   serverBuildTarget: "production", // Ensure this is correctly set
+  serverDependenciesToBundle: [/^remix-utils.*/],
   serverModuleFormat: "cjs",
   serverConditions: ["workerd", "worker", "browser"],
   dev: { port: process.env.HMR_SERVER_PORT || 8002 },
