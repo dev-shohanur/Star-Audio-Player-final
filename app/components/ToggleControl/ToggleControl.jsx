@@ -23,7 +23,7 @@ export function ToggleControl({ value = true, onChange = () => {}, label }) {
             style={{ display: "none" }}
             type="checkbox"
             onClick={() => onChange(!value)}
-            checked={value}
+            defaultChecked={value}
           />
           <span className="slider round"></span>
         </label>

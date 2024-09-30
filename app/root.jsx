@@ -4,6 +4,9 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteError,
+  isRouteErrorResponse,
+  
 } from "@remix-run/react";
 
 export default function App() {
@@ -28,3 +31,34 @@ export default function App() {
     </html>
   );
 }
+
+
+export function ErrorBoundary({error}) {
+  // const error = useRouteError();
+
+  // Handle route error responses
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>Oops</h1>
+        <div>Status: {error.status}</div>
+        <div>{error.data?.message || "Something went wrong."}</div>
+      </div>
+    );
+  }
+
+  // Handle generic errors with better type checking
+  let errorMessage = "Unknown error";
+  if (error instanceof Error) {
+    errorMessage = error.message;
+  }
+
+  return (
+    <div>
+      <h1>Uh oh ...</h1>
+      <p>Something went wrong.</p>
+      <pre>{errorMessage}</pre>
+    </div>
+  );
+}
+

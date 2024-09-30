@@ -1,7 +1,7 @@
 import {
-  redirect,
   useActionData,
   useLoaderData,
+  useNavigation,
   useSubmit,
 } from "@remix-run/react";
 import {
@@ -67,125 +67,145 @@ export const loader = async ({ request }) => {
 };
 
 export const action = async ({ request }) => {
-  // Authentication
   const { admin } = await authenticate.admin(request);
   const body = await request.formData();
-
-  const user = await prisma.Users.findMany({
-    where: { shop: admin?.rest?.session?.shop },
-  });
-  const charge = await prisma.Charges.findMany({
-    where: { shop: admin?.rest?.session?.shop },
-  });
-
-  if (user.length === 0) {
-    return { error: "User not found" };
-  }
-
-  // Update user planId
-  await prisma.Users.update({
-    where: { id: user[0]?.id },
-    data: { planId: body.get("id") },
-  });
-
-  let response;
-
-  if (request.method === "POST") {
-    // Create new subscription
-    response = await admin.graphql(
-      `#graphql
-      mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $trialDays: Int, $test: Boolean) {
-        appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
-          userErrors {
-            field
-            message
+  try {
+    const user = await prisma.Users.findMany({
+      where: { shop: admin?.rest?.session?.shop },
+    });
+    const charge = await prisma.Charges.findMany({
+      where: { shop: admin?.rest?.session?.shop },
+    });
+  
+    if (user.length === 0) {
+      return { error: "User not found" };
+    }
+  
+    // Update user planId
+    await prisma.Users.update({
+      where: { id: user[0]?.id },
+      data: { planId: body.get("id") },
+    });
+  
+    let response;
+  
+    if (request.method === "POST") {
+      console.log('sending')
+      // Create new subscription
+      response = await admin.graphql(
+        `#graphql
+        mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $trialDays: Int, $test: Boolean) {
+          appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+            userErrors {
+              field
+              message
+            }
+            appSubscription {
+              id
+            }
+            confirmationUrl
           }
-          appSubscription {
-            id
-          }
-          confirmationUrl
-        }
-      }`,
-      {
-        variables: {
-          name: body.get("name"),
-          returnUrl: `https://admin.shopify.com/store/${admin?.rest?.session?.shop.split(".")[0]}/apps/html5-audio-player/app/SuccessBilling`,
-          lineItems: [
-            {
-              plan: {
-                appRecurringPricingDetails: {
-                  price: {
-                    amount: Number(body.get("price")),
-                    currencyCode: body.get("currencyCode"),
+        }`,
+        {
+          variables: {
+            name: body.get("name"),
+            returnUrl: `https://admin.shopify.com/store/${admin?.rest?.session?.shop.split(".")[0]}/apps/audio-player-by-bplugins/app/SuccessBilling`,
+            lineItems: [
+              {
+                plan: {
+                  appRecurringPricingDetails: {
+                    price: {
+                      amount: Number(body.get("price")),
+                      currencyCode: body.get("currencyCode"),
+                    },
+                    interval: "EVERY_30_DAYS",
                   },
-                  interval: "EVERY_30_DAYS",
                 },
               },
-            },
-          ],
-          trialDays: 7,
-          test: true, // Set this to false in production
+            ],
+            trialDays: 7,
+            test:true, // Set this to false in production
+          },
         },
-      },
-    );
-  } else if (request.method === "PUT") {
+      );
 
-    // Cancel existing subscription
-    const appSubscriptionResponse = await admin.graphql(
-      `#graphql
-      mutation AppSubscriptionCancel($id: ID!) {
-        appSubscriptionCancel(id: $id) {
-          userErrors {
-            field
-            message
+      const data = await response.json();
+  
+      return { data, charges: charge, user: user };
+    } else if (request.method === "PUT") {
+  
+      // Cancel existing subscription
+      const appSubscriptionResponse = await admin.graphql(
+        `#graphql
+        mutation AppSubscriptionCancel($id: ID!) {
+          appSubscriptionCancel(id: $id) {
+            userErrors {
+              field
+              message
+            }
+            appSubscription {
+              id
+              status
+            }
           }
-          appSubscription {
-            id
-            status
-          }
-        }
-      }`,
-      {
-        variables: {
-          id: `gid://shopify/AppSubscription/${user[0]?.chargeId}`,
+        }`,
+        {
+          variables: {
+            id: `gid://shopify/AppSubscription/${user[0]?.chargeId}`,
+          },
         },
-      },
-    );
-    const appSubscription = await appSubscriptionResponse.json(); // Single json call
-
-    await prisma.Charges.update({
-      where: { id: charge[0]?.id },
-      data: {
-        status:
-          appSubscription?.data?.appSubscriptionCancel?.appSubscription?.status,
-      },
-    });
-
-    // Error Handling
-    if (
-      appSubscription?.errors ||
-      (appSubscription?.data &&
-        appSubscription?.data?.appSubscriptionCancel?.userErrors?.length > 0)
-    ) {
-      return {
-        error: "Operation failed",
-        details: appSubscription.errors || appSubscription.data.userErrors,
-      };
+      );
+      const appSubscription = await appSubscriptionResponse.json(); // Single json call
+  
+      await prisma.Charges.update({
+        where: { id: charge[0]?.id },
+        data: {
+          status:
+            appSubscription?.data?.appSubscriptionCancel?.appSubscription?.status,
+        },
+      });
+  
+      // Error Handling
+      if (
+        appSubscription?.errors ||
+        (appSubscription?.data &&
+          appSubscription?.data?.appSubscriptionCancel?.userErrors?.length > 0)
+      ) {
+        return {
+          error: "Operation failed",
+          details: appSubscription.errors || appSubscription.data.userErrors,
+        };
+      }
+  
+      return { data: appSubscription };
     }
-
-    return { data: appSubscription };
+    // console.log(response,"=================================================")
+  
+    const data = await response.json();
+  
+    return { data, charges: charge, user: user };
+  } catch (error) {
+    console.error("Error fetching:", error);
+    throw error;
   }
+  // Authentication
+  
 
-  const data = await response.json();
-
-  return { data, charges: charge, user: user };
+  
 };
 
 const SubscriptionBtn = (props) => {
   const submit = useSubmit();
+  const nav = useNavigation();
   const actionData = useActionData();
   const loaderData = useLoaderData();
   const [loading, setLoading] = useState(false);
+
+  const isLoading =
+  (["loading", "submitting"].includes(nav.state) &&
+    nav.formMethod === "POST") ||
+  nav.formMethod === "PUT" ||
+  nav.formMethod === "DELETE";
 
   const plan = loaderData.plan;
   const plans = loaderData.allPlans;
@@ -194,6 +214,8 @@ const SubscriptionBtn = (props) => {
     window.top.location =
       actionData?.data?.data?.appSubscriptionCreate?.confirmationUrl;
   }
+
+  console.log({actionData})
 
   const startSub = (plan) => {
 
@@ -209,15 +231,11 @@ const SubscriptionBtn = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (actionData) {
-      setLoading(false);
-    }
-  }, [actionData]);
 
-  if (loading) {
-    return <Loader />;
-  }
+
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
 
   const user = loaderData?.user[0];
   const charge = loaderData?.charge[0];
@@ -232,6 +250,7 @@ const SubscriptionBtn = (props) => {
         primaryAction={{
           content: "Cancel Plan",
           onAction: () => cancelSubscription(),
+          loading:isLoading
         }}
       >
         {plan?.recurring_application_charge?.name == "Pro" &&
@@ -313,6 +332,7 @@ const SubscriptionBtn = (props) => {
                         onClick={() => {
                           startSub(plan_item);
                         }}
+                        loading={isLoading}
                       >
                         Upgrade Now
                       </Button>
@@ -328,6 +348,7 @@ const SubscriptionBtn = (props) => {
                     onClick={() => {
                       startSub(plan_item);
                     }}
+                    loading={isLoading}
                   >
                     Upgrade Now
                   </Button>

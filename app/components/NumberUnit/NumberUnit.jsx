@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 import { Select } from "@shopify/polaris";
 
-const NumberUnit = ({ position, type, label, options, value, onChange }) => {
+const NumberUnit = ({ position, type, label, options, value, onChange,min,max }) => {
   const [unit, setUnit] = useState(value?.match(/[a-z%]+/i)[0]);
   const [number, setNumber] = useState(parseInt(value));
 
@@ -40,6 +40,8 @@ const NumberUnit = ({ position, type, label, options, value, onChange }) => {
           name=""
           id={`NumberUnit-${id}`}
           value={number}
+          min={min || 0}
+          max={max || 1000}
           onChange={(e) => setNumber(e.target.value)}
         />
         <Select

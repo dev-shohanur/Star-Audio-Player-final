@@ -1,15 +1,25 @@
-# fly.toml app configuration file generated for appp-weathered-tree-4047 on 2024-09-17T22:57:24+06:00
+# fly.toml app configuration file generated for appp-solitary-morning-3913 on 2024-09-21T09:38:14+06:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'appp-weathered-tree-4047'
+app = 'appp-solitary-morning-3913'
 primary_region = 'sin'
 
 [build]
 
+[env]
+  APP_ENV = "production"
+  APP_URL = "https://appp-solitary-morning-3913.fly.dev"
+  APP_HOST="0.0.0.0"
+  SERVER_HOST="0.0.0.0"
+  HOST="0.0.0.0"
+  APP_PORT = "8080"
+  SERVER_PORT="8080"
+  PORT = "8080"
+
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true

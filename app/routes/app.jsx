@@ -5,19 +5,11 @@ import { AppProvider } from "@shopify/shopify-app-remix/react";
 import "@shopify/polaris/build/esm/styles.css";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+// import { Button } from "@shopify/polaris";
 
 export const loader = async ({ request }) => {
   const { admin, billing } = await authenticate.admin(request);
 
-  // const data = await billing.require({
-  //   plans: [MONTHLY_PLAN],
-  //   isTest: true,
-  //   onFailure: async () =>
-  //     billing.request({
-  //       plan: MONTHLY_PLAN,
-  //       isTest: true,
-  //     }),
-  // });
 
   const user = await prisma.Users.findMany({
     where: { shop: admin?.rest?.session?.shop },
@@ -34,46 +26,13 @@ export const loader = async ({ request }) => {
       },
     });
   }
-  // else if (!charge) {
-  //   const response = await axios.get(
-  //     `https://${admin?.rest?.session?.shop}/admin/api/2024-01/recurring_application_charges/${charge[0]?.chargeId}.json`,
-  //     {
-  //       headers: {
-  //         "X-Shopify-Access-Token": admin?.rest?.session?.accessToken,
-  //         "Content-Type": "application/json",
-  //       },
-  //     },
-  //   );
-
-  //   const subscription = await response.data;
-
-  //   if (subscription?.status === "ACTIVE") {
-  //     if (subscription?.name == "Pro") {
-  //       await prisma.Users.update({
-  //         where: {
-  //           id: user[0].id,
-  //         },
-  //         data: {
-  //           cardits: 10,
-  //         },
-  //       });
-  //     } else if (subscription?.name == "Pro Plus") {
-  //       await prisma.Users.update({
-  //         where: {
-  //           id: user[0].id,
-  //         },
-  //         data: {
-  //           cardits: 100000000000,
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
   return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
 };
 
 export default function App() {
   const { apiKey } = useLoaderData();
+
+
 
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
@@ -81,6 +40,7 @@ export default function App() {
         <Link to="/app" rel="home">
           Home
         </Link>
+        <Link to="/app/documentation">Documentation</Link>
         <Link to="/app/pricing">Pricing</Link>
       </ui-nav-menu>
       <Outlet />

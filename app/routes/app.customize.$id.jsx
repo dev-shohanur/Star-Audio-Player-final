@@ -3,15 +3,12 @@ import { ArrowLeftIcon, CheckSmallIcon } from "@shopify/polaris-icons";
 import {
   Button,
   ButtonGroup,
-  ContextualSaveBar,
+  ColorPicker,
   DropZone,
   Frame,
-  Icon,
   Spinner,
-  Toast,
 } from "@shopify/polaris";
 import {
-  Link,
   useActionData,
   useLoaderData,
   useLocation,
@@ -35,11 +32,18 @@ import Collapse from "../components/Collapse/Collapse";
 import { ToggleControl } from "../components/ToggleControl/ToggleControl";
 import ColorController from "../components/ColorController/ColorController";
 // import ColorPicker from "../components/ColorPicker/ColorPicker";
+import createApp from "@shopify/app-bridge";
+import { Fullscreen } from "@shopify/app-bridge/actions";
 
 export async function loader({ params }) {
-  const audio = await prisma.audio.findUnique({ where: { id: params.id } });
+  try {
+    const audio = await prisma.audio.findUnique({ where: { id: params.id } });
 
-  return { audio };
+    return { audio, id: params.id};
+  } catch (error) {
+    console.error("Error fetching Audio:", error);
+    throw error;
+  }
 }
 
 export async function action({ request }) {
@@ -48,79 +52,84 @@ export async function action({ request }) {
 
   const data = body.get("data");
 
-  let createAudio = "";
-  let updateScreen = "";
-  if (request.method === "PATCH") {
-    const response = await admin.graphql(
-      `#graphql
-mutation fileCreate($files: [FileCreateInput!]!) {
-  fileCreate(files: $files) {
-    files {
-      id
-      alt
-      createdAt
+  try {
+    let createAudio = "";
+    let updateScreen = "";
+    if (request.method === "PATCH") {
+      const response = await admin.graphql(
+        `#graphql
+  mutation fileCreate($files: [FileCreateInput!]!) {
+    fileCreate(files: $files) {
+      files {
+        id
+        alt
+        createdAt
+      }
     }
-  }
-}`,
-      {
-        variables: {
-          files: {
-            alt: "fallback text for an File",
-            contentType: "FILE",
-            originalSource: body.get("url"),
+  }`,
+        {
+          variables: {
+            files: {
+              alt: "fallback text for an File",
+              contentType: "FILE",
+              originalSource: body.get("url"),
+            },
           },
         },
-      },
-    );
-    const responseJson = await response.json();
-    const getUrlPromise = new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        const responseAudioUrl = await admin.graphql(
-          `#graphql
-    query {
-    node(id: "${responseJson?.data?.fileCreate?.files[0]?.id}") {
-        ... on GenericFile {
-            id
-            url
-        }
-    }
-}
-    `,
-        );
-        const responseAudioUrlJson = await responseAudioUrl.json();
-        resolve({ responseAudioUrlJson });
-      }, [1000]);
-    });
-    const { responseAudioUrlJson } = await getUrlPromise;
-    createAudio = await prisma.audio.update({
-      where: {
-        id: body.get("id"),
-      },
-      data: {
-        title: body.get("title"),
-        url: responseAudioUrlJson.data.node.url,
-        mainColor: body.get("mainColor"),
-      },
-    });
-
-    return json({ createAudio, updateScreen });
-  } else if (request.method === "POST") {
-    createAudio = await prisma.audio.update({
-      where: {
-        id: body.get("id"),
-      },
-      data: {
-        title: body.get("title"),
-        url: body.get("url"),
-        mainColor: body.get("mainColor"),
-        [body.get("screen")]: JSON.parse(body.get("screenData")),
-        selectedScreen: body.get("screen"),
-      },
-    });
-    return json({ createAudio, updateScreen });
+      );
+      const responseJson = await response.json();
+      const getUrlPromise = new Promise((resolve, reject) => {
+        setTimeout(async () => {
+          const responseAudioUrl = await admin.graphql(
+            `#graphql
+      query {
+      node(id: "${responseJson?.data?.fileCreate?.files[0]?.id}") {
+          ... on GenericFile {
+              id
+              url
+          }
+      }
   }
+      `,
+          );
+          const responseAudioUrlJson = await responseAudioUrl.json();
+          resolve({ responseAudioUrlJson });
+        }, [1000]);
+      });
+      const { responseAudioUrlJson } = await getUrlPromise;
+      createAudio = await prisma.audio.update({
+        where: {
+          id: body.get("id"),
+        },
+        data: {
+          title: body.get("title"),
+          url: responseAudioUrlJson.data.node.url,
+          mainColor: body.get("mainColor"),
+        },
+      });
 
-  return data;
+      return json({ createAudio, updateScreen });
+    } else if (request.method === "POST") {
+      createAudio = await prisma.audio.update({
+        where: {
+          id: body.get("id"),
+        },
+        data: {
+          title: body.get("title"),
+          url: body.get("url"),
+          mainColor: body.get("mainColor"),
+          [body.get("screen")]: JSON.parse(body.get("screenData")),
+          selectedScreen: body.get("screen"),
+        },
+      });
+      return json({ createAudio, updateScreen });
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching Audio Update:", error);
+    throw error;
+  }
 }
 
 const Customize = () => {
@@ -130,11 +139,8 @@ const Customize = () => {
   const submit = useSubmit();
   const action = useActionData();
   const loaderData = useLoaderData({ data: location.pathname.split("/")[3] });
-  const [active, setActive] = useState(false);
-  const toggleActive = useCallback(() => setActive((active) => !active), []);
-  const toastMarkup = active ? (
-    <Toast content="Successfully Saved!" onDismiss={toggleActive} />
-  ) : null;
+
+  const [isValid, setIsValid] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
@@ -164,6 +170,7 @@ const Customize = () => {
   const [borderRadius, setBorderRadius] = useState(
     selectedScreen?.borderRadius,
   );
+
   const [borderWidth, setBorderWidth] = useState(selectedScreen?.borderWidth);
   const [borderStyle, setBorderStyle] = useState(selectedScreen?.borderStyle);
   const [borderColor, setBorderColor] = useState(selectedScreen?.borderColor);
@@ -211,8 +218,6 @@ const Customize = () => {
     ["loading", "submitting"]?.includes(nav.state) && nav.formMethod === "POST";
 
   const [, setSearchParams] = useSearchParams();
-
-  const playerRef = useRef();
 
   let controls = {
     controls: [
@@ -382,25 +387,11 @@ const Customize = () => {
       ],
     };
   }
-  useEffect(() => {
-    const play = new Plyr("#player", controls);
-    // if (playerRef.current) {
-    //   setPlayer(new Plyr(playerRef.current, controls));
-    // }
-    return () => {
-      play?.destroy();
-    };
-  }, [screen, controls]);
 
-  useEffect(() => {
-    if (playerRef.current) {
-      playerRef.current.src = url;
-    }
-  }, [url]);
 
-  useEffect(() => {
-    setSearchParams({ fullscreen: true });
-  }, []);
+  // useEffect(() => {
+  //   setSearchParams({ fullscreen: true });
+  // }, []);
 
   useEffect(() => {
     if (action?.createAudio?.url) {
@@ -474,12 +465,13 @@ const Customize = () => {
       },
       { method: "POST" },
     );
-    toggleActive();
+    shopify.toast.show("Successfully Saved!");
   };
-
+  const [validURL, setValidURL] = useState('https://cdn.plyr.io/static/demo/Kishi_Bashi_-_It_All_Began_With_a_Burst.mp3')
   const handleSubmitFile = () => {
     setLoading(true);
     const formData = new FormData();
+    
 
     formData.append("async-upload", files[0]);
     const url = `https://files.bplugins.com/wp-json/media-upload/v1/image-upload`;
@@ -528,21 +520,94 @@ const Customize = () => {
           );
           setFiles([]);
           setLoading(false);
+          shopify.toast.show("Successfully Saved!");
         } else {
           setLoading(false);
         }
       });
   };
 
-  useEffect(() => {
-    setFiles([]);
-  }, [url]);
-
   const handleDropZoneDrop = useCallback(
     (_dropFiles, acceptedFiles, _rejectedFiles) =>
       setFiles((files) => [...files, ...acceptedFiles]),
     [],
   );
+
+  function removeURLParams(url) {
+    try {
+      const parsedURL = new URL(url);
+      return parsedURL.origin + parsedURL.pathname;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function validateMediaURL(url) {
+    if (url === null) {
+      return false;
+    }
+    // Regular expression to check if URL is valid
+    const urlPattern =
+      /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})(\/[\w .-]*)*\/?$/;
+
+    // Supported audio and video file extensions
+    const mediaExtensions = [
+      "mp3",
+      "wav",
+      "ogg",
+      "aac",
+      "flac", // audio formats
+      "mp4",
+      "mov",
+      "avi",
+      "mkv",
+      "webm",
+      "wmv",
+    ]; // video formats
+
+    // Check if URL is valid
+    if (!urlPattern.test(url)) {
+      return false;
+    }
+
+    // Extract the file name from the URL, ignoring query parameters
+    const cleanURL = new URL(url).pathname;
+
+    // Extract the file extension from the cleaned URL
+    const extension = cleanURL.split(".").pop().toLowerCase();
+
+    // Check if the URL has a valid audio or video extension
+    return mediaExtensions.includes(extension);
+  }
+
+  useEffect(() => {
+    setFiles([]);
+    if (validateMediaURL(removeURLParams(url))) {
+      setIsValid(true);
+      setValidURL(url)
+    } else {
+      setIsValid(false);
+    }
+  }, [url]);
+
+  useEffect(() => {
+    console.log({validURL});
+  }, [url,validURL]);
+
+  useEffect(() => {
+    const play = new Plyr("#player", controls);
+    // if (playerRef.current) {
+    //   setPlayer(new Plyr(playerRef.current, controls));
+    // }
+    return () => {
+      play?.destroy();
+    };
+  }, [url,screen, controls,validURL]);
+
+  const copyId = (id) => {
+    navigator.clipboard.writeText(id);
+    shopify.toast.show("I'd Copied Successfully");
+  };
 
   return (
     <div>
@@ -559,6 +624,16 @@ const Customize = () => {
             {/* <Button size="large" disabled>
             Cancel
           </Button> */}
+            <Button
+              variant="primary"
+              size="large"
+              onClick={() => {
+                copyId(loaderData?.id);
+              }}
+              loading={isLoading}
+            >
+              Copy ID
+            </Button>
             <Button
               variant="primary"
               tone="success"
@@ -597,10 +672,14 @@ const Customize = () => {
                   )}
                   <input
                     type="url"
-                    value={url}
-                    onChange={setUrl}
+                    defaultValue={url}
+                    onChange={(e) => {
+                      if (e.target.value?.length > 0) {
+                        setUrl(e.target.value);
+                      }
+                    }}
                     id={`FileUpload`}
-                    disabled={isLoading}
+                    // disabled={true}
                   />
                   <div style={{ width: 40, height: 40 }}>
                     <DropZone onDrop={handleDropZoneDrop}>
@@ -627,11 +706,13 @@ const Customize = () => {
                   <FileUploadWithLink
                     label="image"
                     value={image || selectedScreen?.image}
+                    disabled={true}
                     onChange={setImage}
                   />
                   <FileUploadWithLink
                     label="Background Image"
                     value={backgroundImage || selectedScreen?.backgroundImage}
+                    disabled={true}
                     onChange={setBackgroundImage}
                   />
                 </>
@@ -672,6 +753,8 @@ const Customize = () => {
               <NumberUnit
                 type="number"
                 label="Height"
+                min={0}
+                max={1000}
                 options={[
                   { label: "PX", value: "px" },
                   { label: "%", value: "%" },
@@ -679,18 +762,28 @@ const Customize = () => {
                   { label: "REM", value: "rem" },
                 ]}
                 value={height}
-                onChange={setHeight}
+                onChange={(value) => {
+                  if (parseInt(value) >= 0) {
+                    setHeight(value);
+                  }
+                }}
               />
               <NumberUnit
                 type="number"
                 label="Icon Size"
+                min={0}
+                max={50}
                 options={[
                   { label: "PX", value: "px" },
                   { label: "%", value: "%" },
                   { label: "REM", value: "rem" },
                 ]}
                 value={iconSize}
-                onChange={setIconSize}
+                onChange={(value) => {
+                  if (parseInt(value) >= 0 && parseInt(value) <= 50) {
+                    setIconSize(value);
+                  }
+                }}
               />
             </Collapse>
             <Collapse title="Border" height={600}>
@@ -827,6 +920,7 @@ const Customize = () => {
                   display: flex;
                   justify-content: center;
                   align-items: center;
+                  max-width: 100%;
                   width:${width};
                 height:${height};
               }`
@@ -875,11 +969,15 @@ const Customize = () => {
           </style>`,
               }}
             />
-            <audio ref={playerRef} id="player" controls>
-              <source src={url} type="audio/mp3" />
-            </audio>
+            {url.length && validateMediaURL(removeURLParams(validURL)) ? (
+              <audio id="player" controls>
+                <source src={url} type="audio/mp3" />
+              </audio>
+              // <h3>valid {validURL}</h3>
+            ) : (
+              <p>Invalid Url</p>
+            )}
           </div>
-          {toastMarkup}
         </div>
       </Frame>
     </div>

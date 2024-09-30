@@ -20,5 +20,7 @@ module.exports = {
   serverModuleFormat: "cjs",
   serverConditions: ["workerd", "worker", "browser"],
   dev: { port: process.env.HMR_SERVER_PORT || 8002 },
-  future: {},
+  future: {
+    v2_errorBoundary: true,
+  },
 };

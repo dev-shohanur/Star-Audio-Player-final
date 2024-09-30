@@ -3,11 +3,11 @@
 client_id = "e5f4266eed0093b759b2bb014c42914b"
 name = "HTML5 Audio Player"
 handle = "html5-audio-player"
-application_url = "https://toolbar-pts-mu-separated.trycloudflare.com"
+application_url = "https://comic-mpg-chapel-poetry.trycloudflare.com"
 embedded = true
 
 [build]
-automatically_update_urls_on_dev = false
+automatically_update_urls_on_dev = true
 dev_store_url = "bp-first.myshopify.com"
 include_config_on_deploy = true
 
@@ -17,9 +17,9 @@ scopes = "read_products,read_script_tags,write_files,write_script_tags,write_the
 
 [auth]
 redirect_urls = [
-  "https://toolbar-pts-mu-separated.trycloudflare.com/auth/callback",
-  "https://toolbar-pts-mu-separated.trycloudflare.com/auth/shopify/callback",
-  "https://toolbar-pts-mu-separated.trycloudflare.com/api/auth/callback"
+  "https://comic-mpg-chapel-poetry.trycloudflare.com/auth/callback",
+  "https://comic-mpg-chapel-poetry.trycloudflare.com/auth/shopify/callback",
+  "https://comic-mpg-chapel-poetry.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

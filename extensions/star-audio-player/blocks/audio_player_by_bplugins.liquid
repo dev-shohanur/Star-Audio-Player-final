@@ -1,0 +1,11 @@
+<div style="width:100%; display: flex; justify-content: center; align-items: center;">
+  <div class="html5-audio-plyr" data-id="{{ block.settings.id }}"></div>
+</div>
+
+{% schema %}
+{
+  "name": "Audio Player by bPlugins",
+  "target": "section",
+  "settings": [{ "type": "text", "id": "id", "label": "Audio Id" }]
+}
+{% endschema %}

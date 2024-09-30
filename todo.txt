@@ -1,0 +1,3 @@
+1. change/update player name
+2. update 6 step screenshot (add a button to copy id)
+3. take a new screenshot to show how to add id to the player

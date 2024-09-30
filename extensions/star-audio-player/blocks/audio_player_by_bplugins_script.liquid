@@ -16,7 +16,7 @@ const audioPlyrElements = document.querySelectorAll('.html5-audio-plyr');
       .filter((id) => id);
 
 
-    fetch(`https://appp-weathered-tree-4047.fly.dev/app/api/plyr-data?ids=${JSON.stringify(ids)}`, {
+    fetch(`https://appp-solitary-morning-3913.fly.dev/app/api/plyr-data?ids=${JSON.stringify(ids)}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +26,6 @@ const audioPlyrElements = document.querySelectorAll('.html5-audio-plyr');
       .then((res) => res.json())
       .then((datas) => {
 
-        console.log(datas)
 
         let uniqueNumbers = datas.audio.filter(
           (value, index, self) => index === self.findIndex((obj) => obj.id === value.id)
@@ -314,7 +313,7 @@ const audioPlyrElements = document.querySelectorAll('.html5-audio-plyr');
 
 {% schema %}
 {
-  "name": "HTML5 Audio Player",
+  "name": "Audio Player by bPlugins",
   "target": "body"
 }
 {% endschema %}
